@@ -1,0 +1,12 @@
+# Gradle files
+backend/.gradle/
+backend/build/
+
+# IntelliJ
+*.iml
+backend/.idea/workspace.xml
+backend/.idea/tasks.xml
+backend/.idea/gradle.xml
+backend/.idea/assetWizardSettings.xml
+backend/.idea/dictionaries
+backend/.idea/libraries
