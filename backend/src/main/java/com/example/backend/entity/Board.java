@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ToString(exclude = "project")
+@ToString(exclude = "tasks")
 @Entity
 @Table(name = "board")
 public class Board {

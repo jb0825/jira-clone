@@ -1,6 +1,7 @@
-package com.example.backend.repository;
+package com.example.backend;
 
 import com.example.backend.entity.*;
+import com.example.backend.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,12 +10,11 @@ import javax.transaction.Transactional;
 
 @SpringBootTest
 public class RepositoryTest {
-
     /* USER REPOSITORY TEST */
     @Autowired
     private UserRepository userRepository;
 
-    @Test
+    //@Test
     public void userRepositoryCreateTest() {
         User user = new User();
         user.setName("test");
@@ -25,13 +25,13 @@ public class RepositoryTest {
         user.setCompany("company");
         userRepository.save(user);
     }
-    @Test
+    //@Test
     public void userRepositoryReadTest() {
         System.out.println(userRepository.findByNo(2L));
         System.out.println(userRepository.findByEmailAndPassword("test@example.com", "password"));
         System.out.println(userRepository.findByNo(1000L)); // 없을경우 null
     }
-    @Test
+    //@Test
     public void userRepositoryUpdateTest() {
         Long no = 2L;
         User user = userRepository.findByNo(no);
@@ -39,7 +39,7 @@ public class RepositoryTest {
         userRepository.save(user);
         System.out.println(userRepository.findByNo(no));
     }
-    @Test
+    //@Test
     public void userRepositoryDeleteTest() {
         userRepository.delete(userRepository.findByNo(3L));
     }
@@ -48,7 +48,7 @@ public class RepositoryTest {
     @Autowired
     private ProjectRepository projectRepository;
 
-    @Test
+    //@Test
     public void projectRepositoryCreateTest() {
         User leader = userRepository.findByNo(2L);
         Project project = new Project();
@@ -57,12 +57,12 @@ public class RepositoryTest {
         projectRepository.save(project);
     }
     @Transactional
-    @Test
+    //@Test
     public void projectRepositoryReadTest() {
         System.out.println(projectRepository.findByNo(1L));
     }
     @Transactional
-    @Test
+    //@Test
     public void projectRepositoryUpdateTest() {
         Long no = 1L;
         Project project = projectRepository.findByNo(no);
@@ -70,7 +70,7 @@ public class RepositoryTest {
         projectRepository.save(project);
         System.out.println(projectRepository.findByNo(no));
     }
-    @Test
+    //@Test
     public void projectRepositoryDeleteTest() {
         projectRepository.delete(projectRepository.findByNo(7L));
     }
@@ -79,7 +79,7 @@ public class RepositoryTest {
     @Autowired
     private ProjectMemberRepository projectMemberRepository;
 
-    @Test
+    //@Test
     public void projectMemberRepositoryCreateTest() {
         ProjectMember projectMember = new ProjectMember();
         projectMember.setUser(userRepository.findByNo(2L));
@@ -87,28 +87,32 @@ public class RepositoryTest {
         projectMemberRepository.save(projectMember);
     }
     @Transactional
-    @Test
+    //@Test
     public void projectMemberRepositoryReadTest() {
         System.out.println(projectMemberRepository.findByNo(1L));
         System.out.println(projectMemberRepository.findAllByUser(userRepository.findByNo(2L)));
         System.out.println(projectMemberRepository.findAllByProject(projectRepository.findByNo(1L)));
     }
-    @Test
+    //@Test
     public void projectMemberRepositoryUpdateTest() {
         ProjectMember projectMember = projectMemberRepository.findByNo(1L);
         projectMember.setProject(projectRepository.findByNo(8L));
         projectMemberRepository.save(projectMember);
     }
-    @Test
+    //@Test
     public void projectMemberRepositoryDeleteTest() {
         projectMemberRepository.delete(projectMemberRepository.findByNo(2L));
+    }
+    @Test
+    public void projectMemberRepositoryDistinctUserTest() {
+        System.out.println(projectMemberRepository.getAllByProject(projectRepository.findByNo(11L)));
     }
 
     /* BOARD REPOSITORY TEST */
     @Autowired
     private BoardRepository boardRepository;
 
-    @Test
+    //@Test
     public void boardRepositoryCreateTest() {
         Board board = new Board();
         board.setName("board");
@@ -116,18 +120,18 @@ public class RepositoryTest {
         boardRepository.save(board);
     }
     @Transactional
-    @Test
+    //@Test
     public void boardRepositoryReadTest() {
         System.out.println(boardRepository.findByNo(1L).toString());
         System.out.println(boardRepository.findAllByProject(projectRepository.findByNo(1L)));
     }
-    @Test
+    //@Test
     public void boardRepositoryUpdateTest() {
         Board board = boardRepository.findByNo(1L);
         board.setName("name changed");
         boardRepository.save(board);
     }
-    @Test
+    //@Test
     public void boardRepositoryDeleteTest() {
         boardRepository.delete(boardRepository.findByNo(2L));
     }
@@ -136,7 +140,7 @@ public class RepositoryTest {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Test
+    //@Test
     public void taskRepositoryCreateTest() {
         Board board = boardRepository.findByNo(1L);
         Task task = new Task();
@@ -147,50 +151,61 @@ public class RepositoryTest {
         taskRepository.save(task);
     }
     @Transactional
-    @Test
+    //@Test
     public void taskRepositoryReadTest() {
-        System.out.println(taskRepository.findFirstByOrderByNoDesc());
         System.out.println(taskRepository.findByNo(1L));
         System.out.println(taskRepository.findAllByPriority(3));
         System.out.println(taskRepository.findAllByBoard(boardRepository.findByNo(1L)));
     }
-    @Test
+    //@Test
     public void taskRepositoryUpdateTest() {
         Task task = taskRepository.findByNo(1L);
         task.setDescription("description changed");
         task.setPriority(1);
         taskRepository.save(task);
     }
-    @Test
+    //@Test
     public void taskRepositoryDeleteTest() {
         taskRepository.delete(taskRepository.findByNo(7L));
+    }
+    @Test
+    public void getLastByProjectTest() {
+        System.out.println(taskRepository.getLastByProject(projectRepository.findByNo(11L)));
     }
 
     /* TASK PIC REPOSITORY TEST */
     @Autowired
     private TaskPICRepository taskPICRepository;
 
-    @Test
+    //@Test
     public void taskPicRepositoryCreateTest() {
         TaskPIC pic = new TaskPIC();
         pic.setUser(userRepository.findByNo(2L));
-        pic.setTask(taskRepository.findByNo(1L));
+        pic.setTask(taskRepository.findByNo(8L));
         taskPICRepository.save(pic);
     }
-    @Test
+    //@Test
     public void taskPicRepositoryReadTest() {
         System.out.println(taskPICRepository.findByNo(1L));
         System.out.println(taskPICRepository.findAllByUser(userRepository.findByNo(2L)));
         System.out.println(taskPICRepository.findAllByTask(taskRepository.findByNo(1L)));
     }
-    @Test
+    //@Test
     public void taskPicRepositoryUpdateTest() {
         TaskPIC pic = taskPICRepository.findByNo(1L);
         pic.setTask(taskRepository.findByNo(8L));
         taskPICRepository.save(pic);
     }
-    @Test
+    //@Test
     public void taskPicRepositoryDeleteTest() {
         taskPICRepository.delete(taskPICRepository.findByNo(2L));
+    }
+
+    /* JOIN TEST */
+    //@Test
+    public void joinTest() {
+        // task 번호로 person in charge name 조회
+        Task task = taskRepository.findByNo(8L);
+        for(TaskPIC p : taskPICRepository.findAllByTask(task)) System.out.println("name: " + p.getUser().getName());
     }
 }

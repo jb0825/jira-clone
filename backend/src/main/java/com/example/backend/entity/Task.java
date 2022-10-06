@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@ToString(exclude = "board")
 @Entity
 @Table(name = "task")
 public class Task {
