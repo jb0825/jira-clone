@@ -1,28 +1,30 @@
 package com.example.backend.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
 @Entity
+@Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long no;
-
-    @Column(length = 10)
-    private String name;
 
     @Column(length = 50)
     private String email;
 
+    @Column(length = 20)
+    private String name;
+
+    @Column
     private String password;
 
     @Column(length = 20)
-    private String post;
+    private String position;
 
     @Column(length = 20)
     private String department;
@@ -30,6 +32,6 @@ public class User {
     @Column(length = 20)
     private String company;
 
-    @CreatedDate
+    @CreationTimestamp
     private Date createDate;
 }

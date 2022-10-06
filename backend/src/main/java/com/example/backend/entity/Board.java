@@ -1,18 +1,19 @@
 package com.example.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
+@ToString(exclude = "project")
 @Entity
-@Table(name = "project")
-public class Project {
+@Table(name = "board")
+public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long no;
@@ -20,14 +21,12 @@ public class Project {
     @Column(length = 20)
     private String name;
 
-    @CreationTimestamp
-    private Date createDate;
-
-    @OneToOne
-    @JoinColumn(name = "leader")
-    private User leader;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "project_no")
+    private Project project;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "project")
-    private List<Board> boards = new ArrayList<>();
+    @OneToMany(mappedBy = "board")
+    private List<Task> tasks = new ArrayList<>();
 }
