@@ -1,6 +1,9 @@
 package com.example.backend.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -9,6 +12,8 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "user")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

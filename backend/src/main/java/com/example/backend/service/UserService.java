@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserService {
     @Autowired
@@ -28,6 +26,7 @@ public class UserService {
 
     public boolean signUp(User user) {
         if (user == null) return false;
+        if (user.getName() == null || user.getPassword() == null) return false;
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
