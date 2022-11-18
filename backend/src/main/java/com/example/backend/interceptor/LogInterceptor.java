@@ -15,7 +15,7 @@ public class LogInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //log.info("[BEGIN]");
-        log.info("[REQUEST] {} : {}", request.getRemoteAddr(), request.getRequestURI());
+        //log.info("[REQUEST] {} : {} {}", request.getRemoteAddr(), request.getMethod(), request.getRequestURI());
         return true;
     }
 

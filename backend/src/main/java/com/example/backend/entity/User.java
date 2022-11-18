@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long no;
 
+    @NotNull
     @Column(length = 50)
     private String email;
 
+    @NotNull
     @Column(length = 20)
     private String name;
 
+    @NotNull
     @Column
     private String password;
 
