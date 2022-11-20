@@ -5,11 +5,11 @@ import com.example.backend.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 public class ProjectService {
+
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired
@@ -27,6 +27,7 @@ public class ProjectService {
 
     public boolean createProject(Project project) {
         if (project == null) return false;
+        if (project.getName() == null || project.getLeader() == null) return false;
 
         projectRepository.save(project);
         return true;

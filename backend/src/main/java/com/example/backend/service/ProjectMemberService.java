@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class ProjectMemberService {
+
     @Autowired
     private ProjectMemberRepository projectMemberRepository;
     @Autowired
@@ -20,7 +21,10 @@ public class ProjectMemberService {
     private UserService userService;
 
     public List<User> getProjectMembersByProject(Long no) {
-        List<ProjectMember> projectMembers = projectMemberRepository.getAllByProject(projectService.getProjectByNo(no));
+        Project project = projectService.getProjectByNo(no);
+        if (project == null) return null;
+
+        List<ProjectMember> projectMembers = projectMemberRepository.getAllByProject(project);
         List<User> users = new ArrayList<>();
 
         for (ProjectMember pm : projectMembers) users.add(pm.getUser());
@@ -28,7 +32,10 @@ public class ProjectMemberService {
     }
 
     public List<Project> getProjectsByUser(Long no) {
-        List<ProjectMember> projectMembers = projectMemberRepository.getAllByUser(userService.getUserByNo(no));
+        User user = userService.getUserByNo(no);
+        if (user == null) return null;
+
+        List<ProjectMember> projectMembers = projectMemberRepository.getAllByUser(user);
         List<Project> projects = new ArrayList<>();
 
         for (ProjectMember pm : projectMembers) projects.add(pm.getProject());
