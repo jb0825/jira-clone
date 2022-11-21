@@ -6,13 +6,13 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class BodyDto {
-    private StatusEnum status;
-    private MessageEnum message;
+    private int status;
+    private String message;
     private Object data;
 
     public BodyDto() {
-        this.status = StatusEnum.BAD_REQUEST;
-        this.message = MessageEnum.BAD_REQUEST;
+        this.status = StatusCode.BAD_REQUEST;
+        this.message = Message.BAD_REQUEST;
         this.data = null;
     }
 
