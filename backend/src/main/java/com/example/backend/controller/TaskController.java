@@ -1,15 +1,17 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.BodyDto;
+import com.example.backend.dto.Message;
+import com.example.backend.dto.StatusCode;
 import com.example.backend.entity.Task;
-import com.example.backend.entity.User;
+import com.example.backend.service.TaskPICService;
 import com.example.backend.service.TaskService;
+import com.example.backend.util.ResponseEntityCreator;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/task")
@@ -17,36 +19,79 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private TaskPICService taskPICService;
 
-    @ApiOperation(value = "단일 테스크 조회", notes = "테스크 번호로 단일 테스크를 조회합니다.")
+    public ResponseEntityCreator creator = new ResponseEntityCreator();
+
+    @ApiOperation(value = "단일 업무 조회", notes = "업무 번호로 단일 업무를 조회합니다.")
     @GetMapping("/{no}")
-    public ResponseEntity<Task> getTaskByNo(@PathVariable Long no) {
-        ResponseEntity badRequest = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if (no == null) return badRequest;
-
-        Task task = taskService.getTaskByNo(no);
-        return task != null ? new ResponseEntity<>(task, HttpStatus.OK) : badRequest;
+    public ResponseEntity<BodyDto> getTaskByNo(@PathVariable Long no) {
+        return creator.create(taskService.getTaskByNo(no));
     }
 
-    @ApiOperation(value = "테스크로 담당자 조회", notes = "테스크 번호로 해당 테스크의 모든 담당자 조회")
+    @ApiOperation(value = "업무로 담당자 조회", notes = "업무 번호로 해당 업무의 모든 담당자 조회")
     @GetMapping("/{no}/pic")
-    public ResponseEntity<List<User>> getPICsByTask(@PathVariable Long no) {
-        return null;
+    public ResponseEntity<BodyDto> getPICsByTask(@PathVariable Long no) {
+        return creator.create(taskPICService.getPICsByTask(no));
+    }
+
+    @ApiOperation(value = "업무 담당자 추가", notes = "특정 업무에서 해당 사용자 번호의 담당자를 추가합니다.")
+    @PostMapping("/{taskNo}/pic/{userNo}")
+    public ResponseEntity<BodyDto> addTaskPIC(@PathVariable Long taskNo, @PathVariable Long userNo) {
+        BodyDto body = new BodyDto();
+
+        if (!taskPICService.addTaskPIC(userNo, taskNo)) return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+
+        body.setStatus(StatusCode.CREATE);
+        body.setMessage(Message.CREATE);
+        return new ResponseEntity<>(body, HttpStatus.CREATED);
+    }
+    
+    @ApiOperation(value = "업무 담당자 삭제", notes = "특정 업무에서 해당 사용자 번호의 담당자를 삭제합니다.")
+    @DeleteMapping("/{taskNo}/pic/{userNo}")
+    public ResponseEntity<BodyDto> deleteTaskPIC(@PathVariable Long taskNo, @PathVariable Long userNo) {
+        BodyDto body = new BodyDto();
+        
+        if (!taskPICService.deleteTaskPIC(userNo, taskNo)) return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        
+        body.setStatus(StatusCode.OK);
+        body.setMessage(Message.SUCCESS);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity createTask(@RequestBody Task task) {
-        ResponseEntity badRequest = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if (task == null) return badRequest;
+    public ResponseEntity<BodyDto> createTask(@RequestBody Task task) {
+        BodyDto body = new BodyDto();
+        ResponseEntity<BodyDto> badRequest = new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 
-        return taskService.createTask(task) ? new ResponseEntity(HttpStatus.OK) : badRequest;
+        if (task == null) {
+            body.setMessage(Message.EMPTY_REQUEST);
+            return badRequest;
+        }
+        if (!taskService.createTask(task)) return badRequest;
+
+        body.setStatus(StatusCode.CREATE);
+        body.setMessage(Message.CREATE);
+        return new ResponseEntity<>(body, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{no}")
-    public ResponseEntity deleteTask(@PathVariable Long no) {
-        ResponseEntity badRequest = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if (no == null) return badRequest;
+    public ResponseEntity<BodyDto> deleteTask(@PathVariable Long no) {
+        BodyDto body = new BodyDto();
 
-        return taskService.deleteTask(no) ? new ResponseEntity(HttpStatus.OK) : badRequest;
+        if (!taskService.deleteTask(no)) return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+
+        body.setStatus(StatusCode.OK);
+        body.setMessage(Message.SUCCESS);
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    /* TASK PERSON IN CHARGE */
+    /* session 으로바꾸기 \ */
+    @ApiOperation(value = "사용자로 담당한 업무 조회", notes = "사용자 번호로 담당하고 있는 모든 업무를 조회합니다.")
+    @GetMapping("/pic/{no}")
+    public ResponseEntity<BodyDto> getTasksByUser(@PathVariable Long no) {
+        return creator.create(taskPICService.getTasksByUser(no));
     }
 }

@@ -15,28 +15,23 @@ import org.springframework.http.ResponseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class ResponseEntityBuilder {
-
-    private int successCode = StatusCode.OK;
-    private int failCode = StatusCode.NOT_FOUND;
-    private String successMsg = Message.READ;
-    private String failMsg = Message.NOT_FOUND;
+public class ResponseEntityCreator {
 
     /**
-     * create READ body
+     * create ResponseEntity for [READ] action
      * @param obj the object to check null
      * @return ResponseEntity
      */
-    public ResponseEntity<BodyDto> read(Object obj) {
+    public ResponseEntity<BodyDto> create(Object obj) {
         BodyDto body = new BodyDto();
 
         if (obj == null) {
-            body.setMessage(failMsg);
+            body.setMessage(Message.NOT_FOUND);
             return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
         }
 
-        body.setStatus(successCode);
-        body.setMessage(successMsg);
+        body.setStatus(StatusCode.OK);
+        body.setMessage(Message.READ);
         body.setData(obj);
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
