@@ -1,5 +1,6 @@
 package com.example.backend;
 
+import com.example.backend.dto.UserDto;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,11 @@ public class RepositoryTest {
     //@Test
     public void userRepositoryDeleteTest() {
         userRepository.delete(userRepository.findByNo(3L));
+    }
+
+    //@Test
+    public void userRepositoryDtoTest() {
+        for(UserDto u : userRepository.selectAll()) System.out.println(u.toString());
     }
 
     /* PROJECT REPOSITORY TEST */

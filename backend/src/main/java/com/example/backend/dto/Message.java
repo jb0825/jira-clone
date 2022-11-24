@@ -10,4 +10,5 @@ public class Message {
     public final static String READ =           "조회 성공";
     public final static String SUCCESS =        "요청 성공";
     public final static String EMPTY_REQUEST =  "request body 값이 비어있음";
+    public final static String FORBIDDEN =      "로그인이 필요한 작업입니다.";
 }

@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 /**
  * Create a ResponseEntity with a BodyDto (status, message, data) for REST Controller.
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class ResponseEntityCreator {
 
     /**

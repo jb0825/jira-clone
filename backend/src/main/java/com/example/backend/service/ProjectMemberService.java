@@ -42,20 +42,22 @@ public class ProjectMemberService {
         return projects;
     }
 
-    public boolean addProjectMember(Long userNo, Long projectNo) {
-        User user = userService.getUserByNo(userNo);
+    public boolean addProjectMember(Long userNo, Long projectNo, Long leaderNo) {
         Project project = projectService.getProjectByNo(projectNo);
-        if (user == null || project == null) return false;
+        User user = userService.getUserByNo(userNo);
+
+        if (projectService.checkLeader(project, leaderNo) || user == null) return false;
 
         ProjectMember member = new ProjectMember(null, user, project);
         projectMemberRepository.save(member);
         return true;
     }
 
-    public boolean deleteProjectMember(Long userNo, Long projectNo) {
-        User user = userService.getUserByNo(userNo);
+    public boolean deleteProjectMember(Long userNo, Long projectNo, Long leaderNo) {
         Project project = projectService.getProjectByNo(projectNo);
-        if (user == null || project == null) return false;
+        User user = userService.getUserByNo(userNo);
+
+        if (projectService.checkLeader(project, leaderNo) || user == null) return false;
 
         ProjectMember member = projectMemberRepository.findByUserAndProject(user, project);
         if (member == null) return false;
@@ -63,4 +65,5 @@ public class ProjectMemberService {
         projectMemberRepository.delete(member);
         return true;
     }
+
 }

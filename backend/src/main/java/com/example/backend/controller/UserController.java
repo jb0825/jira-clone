@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -26,6 +28,12 @@ public class UserController {
     public ResponseEntity<BodyDto> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
         return creator.create(user);
+    }
+
+    @ApiOperation(value = "모든 사용자 조회", notes = "모든 사용자 정보를 패스워드를 제외하고 조회합니다.")
+    @GetMapping
+    public ResponseEntity<BodyDto> getAllUsers() {
+        return creator.create(userService.getAllUsers());
     }
 
     @PostMapping("/sign-up")
@@ -45,23 +53,25 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<BodyDto> signIn(@RequestBody User user) {
+    public ResponseEntity<BodyDto> signIn(@RequestBody User user, HttpSession session) {
         BodyDto body = new BodyDto();
         ResponseEntity<BodyDto> badRequest = new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 
         if (user == null) return badRequest;
         if (user.getEmail() == null || user.getPassword() == null) return badRequest;
 
-        String email = user.getEmail();
-        String password = user.getPassword();
+        User loginUser = userService.signIn(user.getEmail(), user.getPassword());
 
-        if (!userService.signIn(email, password)) {
+        if (loginUser == null) {
             body.setMessage(Message.LOGIN_FAIL);
             return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
         }
 
         body.setStatus(StatusCode.OK);
         body.setMessage(Message.LOGIN_SUCCESS);
+
+        session.setAttribute("login", loginUser);
+
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 

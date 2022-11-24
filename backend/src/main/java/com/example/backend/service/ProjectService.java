@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProjectService {
@@ -33,11 +34,21 @@ public class ProjectService {
         return true;
     }
 
-    public boolean deleteProject(Long no) {
-        Project project = projectRepository.findByNo(no);
+    public boolean deleteProject(Long projectNo, Long leaderNo) {
+        Project project = projectRepository.findByNo(projectNo);
+
         if (project == null) return false;
+        if (checkLeader(project, leaderNo)) return false;
 
         projectRepository.delete(project);
         return true;
+    }
+
+    /**
+     * 로그인한 사용자와 Project leader 가 일치하는지 체크
+     */
+    public boolean checkLeader(Project project, Long leaderNo) {
+        if (project == null) return false;
+        return Objects.equals(project.getLeader().getNo(), leaderNo);
     }
 }

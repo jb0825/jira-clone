@@ -61,7 +61,7 @@ public class ServiceTest {
     }
     @Test
     public void deleteProjectTest() {
-        System.out.println(projectService.deleteProject(12L));
+        //System.out.println(projectService.deleteProject(12L));
     }
 
     /* PROJECT MEMBER SERVICE TEST */
@@ -70,8 +70,8 @@ public class ServiceTest {
 
     @Test
     public void createMemberTest() {
-        System.out.println(memberService.addProjectMember(8L, 11L)); // true
-        System.out.println(memberService.addProjectMember(1L, 11L)); // false
+        //System.out.println(memberService.addProjectMember(8L, 11L)); // true
+        //System.out.println(memberService.addProjectMember(1L, 11L)); // false
     }
     @Test
     public void getMemberByProjectTest() {
