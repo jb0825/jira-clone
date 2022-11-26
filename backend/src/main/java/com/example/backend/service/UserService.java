@@ -19,7 +19,7 @@ public class UserService {
 
     public User getUserByNo(Long no) { return userRepository.findByNo(no); }
 
-    public User getUserByEmail(String email) { return userRepository.findByEmail(email); }
+    public UserDto getUserByEmail(String email) { return userRepository.selectByEmail(email); }
 
     public List<UserDto> getAllUsers() { return userRepository.selectAll(); }
 

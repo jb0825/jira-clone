@@ -46,7 +46,7 @@ public class ProjectMemberService {
         Project project = projectService.getProjectByNo(projectNo);
         User user = userService.getUserByNo(userNo);
 
-        if (projectService.checkLeader(project, leaderNo) || user == null) return false;
+        if (!projectService.checkLeader(project, leaderNo) || user == null) return false;
 
         ProjectMember member = new ProjectMember(null, user, project);
         projectMemberRepository.save(member);
@@ -57,7 +57,7 @@ public class ProjectMemberService {
         Project project = projectService.getProjectByNo(projectNo);
         User user = userService.getUserByNo(userNo);
 
-        if (projectService.checkLeader(project, leaderNo) || user == null) return false;
+        if (!projectService.checkLeader(project, leaderNo) || user == null) return false;
 
         ProjectMember member = projectMemberRepository.findByUserAndProject(user, project);
         if (member == null) return false;

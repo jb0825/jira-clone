@@ -4,6 +4,7 @@ import com.example.backend.dto.BodyDto;
 import com.example.backend.dto.Message;
 import com.example.backend.dto.StatusCode;
 import com.example.backend.entity.Task;
+import com.example.backend.entity.User;
 import com.example.backend.service.TaskPICService;
 import com.example.backend.service.TaskService;
 import com.example.backend.util.ResponseEntityCreator;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/task")
@@ -23,6 +26,13 @@ public class TaskController {
     private TaskPICService taskPICService;
 
     public ResponseEntityCreator creator = new ResponseEntityCreator();
+
+    @ApiOperation(value = "담당한 업무 조회", notes = "로그인한 사용자가 담당하고 있는 모든 업무를 조회합니다.")
+    @GetMapping("/pic")
+    public ResponseEntity<BodyDto> getTasksByUser(HttpSession session) {
+        Long no = ((User) session.getAttribute("login")).getNo();
+        return creator.create(taskPICService.getTasksByUser(no));
+    }
 
     @ApiOperation(value = "단일 업무 조회", notes = "업무 번호로 단일 업무를 조회합니다.")
     @GetMapping("/{no}")
@@ -61,7 +71,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<BodyDto> createTask(@RequestBody Task task) {
+    public ResponseEntity<BodyDto> createTask(@RequestBody Task task, @RequestBody Long boardNo) {
         BodyDto body = new BodyDto();
         ResponseEntity<BodyDto> badRequest = new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 
@@ -69,7 +79,7 @@ public class TaskController {
             body.setMessage(Message.EMPTY_REQUEST);
             return badRequest;
         }
-        if (!taskService.createTask(task)) return badRequest;
+        if (!taskService.createTask(task, boardNo)) return badRequest;
 
         body.setStatus(StatusCode.CREATE);
         body.setMessage(Message.CREATE);
@@ -85,13 +95,5 @@ public class TaskController {
         body.setStatus(StatusCode.OK);
         body.setMessage(Message.SUCCESS);
         return new ResponseEntity<>(body, HttpStatus.OK);
-    }
-
-    /* TASK PERSON IN CHARGE */
-    /* session 으로바꾸기 \ */
-    @ApiOperation(value = "사용자로 담당한 업무 조회", notes = "사용자 번호로 담당하고 있는 모든 업무를 조회합니다.")
-    @GetMapping("/pic/{no}")
-    public ResponseEntity<BodyDto> getTasksByUser(@PathVariable Long no) {
-        return creator.create(taskPICService.getTasksByUser(no));
     }
 }

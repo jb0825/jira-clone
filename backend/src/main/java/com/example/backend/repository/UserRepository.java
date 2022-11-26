@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT new com.example.backend.dto.UserDto(u.no, u.email, u.name, u.position, u.department, u.company) FROM User u")
     List<UserDto> selectAll();
+
+    @Query("SELECT new com.example.backend.dto.UserDto(u.no, u.email, u.name, u.position, u.department, u.company) FROM User u WHERE u.email = ?1")
+    UserDto selectByEmail(String email);
 }

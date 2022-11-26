@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.entity.Board;
+import com.example.backend.entity.Project;
 import com.example.backend.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,12 @@ public class BoardService {
 
     public Board getBoardByNo(Long no) { return boardRepository.findByNo(no); }
 
-    public boolean createBoard(Board board) {
-        if (board == null) return false;
-        if (board.getName() == null || board.getProject() == null) return false;
+    public boolean createBoard(Board board, Long projectNo) {
+        Project project = projectService.getProjectByNo(projectNo);
+        if (board == null || project == null) return false;
+        if (board.getName() == null) return false;
 
+        board.setProject(project);
         boardRepository.save(board);
         return true;
     }

@@ -16,9 +16,7 @@ public class ProjectService {
     @Autowired
     private UserService userService;
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
+    public List<Project> getAllProjects() { return projectRepository.findAll(); }
 
     public List<Project> getProjectsByLeaderNo(Long no) {
         return projectRepository.findAllByLeader(userService.getUserByNo(no));

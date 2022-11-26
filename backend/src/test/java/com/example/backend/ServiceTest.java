@@ -86,12 +86,12 @@ public class ServiceTest {
     @Autowired
     private BoardService boardService;
 
-    @Test
+    //@Test
     public void createBoardTest() {
         Board board = new Board();
         board.setName("board");
         board.setProject(projectService.getProjectByNo(11L));
-        System.out.println(boardService.createBoard(board));
+        //System.out.println(boardService.createBoard(board));
     }
     @Test
     public void getBoardByProjectTest() {
@@ -106,12 +106,12 @@ public class ServiceTest {
     @Autowired
     private TaskService taskService;
 
-    @Test
+    //@Test
     public void createTaskTest() {
         Task task = new Task();
         task.setTitle("task");
         task.setBoard(boardService.getBoardByNo(5L));
-        System.out.println(taskService.createTask(task));
+        //System.out.println(taskService.createTask(task));
     }
     @Test
     public void getTasksByBoardNoTest() {

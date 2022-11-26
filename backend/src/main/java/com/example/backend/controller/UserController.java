@@ -26,7 +26,7 @@ public class UserController {
     @ApiOperation(value = "단일 사용자 조회", notes = "이메일로 사용자 정보를 조회합니다.")
     @GetMapping("/{email}")
     public ResponseEntity<BodyDto> getUserByEmail(@PathVariable String email) {
-        User user = userService.getUserByEmail(email);
+        UserDto user = userService.getUserByEmail(email);
         return creator.create(user);
     }
 

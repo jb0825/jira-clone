@@ -38,12 +38,12 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BodyDto> createBoard(@RequestBody Board board) {
+    public ResponseEntity<BodyDto> createBoard(@RequestBody Board board, @RequestBody Long projectNo) {
         BodyDto body = new BodyDto();
         ResponseEntity<BodyDto> badRequest = new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 
         if (board == null) return badRequest;
-        if (!boardService.createBoard(board)) return badRequest;
+        if (!boardService.createBoard(board, projectNo)) return badRequest;
 
         body.setStatus(StatusCode.CREATE);
         body.setMessage(Message.CREATE);

@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -33,13 +34,19 @@ public class ProjectController {
 
     public ResponseEntityCreator creator = new ResponseEntityCreator();
 
-    @ApiOperation(value = "모든 프로젝트 조회", notes = "모든 프로젝트를 조회합니다.")
+    @ApiOperation(
+        value = "모든 프로젝트 조회",
+        notes = "모든 프로젝트를 조회합니다. 단, 조건: \ncondition = L : 사용자가 리더인 모든 프로젝트를 조회합니다.\ncondition = M : 사용자가 멤버인 모든 프로젝트를 조회합니다.")
     @GetMapping
-    public ResponseEntity<BodyDto> getAllProjects() {
-        return new ResponseEntity<>(
-            new BodyDto(StatusCode.OK, Message.READ, projectService.getAllProjects()),
-            HttpStatus.OK
-        );
+    public ResponseEntity<BodyDto> getAllProjects(@RequestParam(required = false) String condition, HttpSession session) {
+        List<Project> project = null;
+        Long no = ((User) session.getAttribute("login")).getNo();
+
+        if (condition == null) project = projectService.getAllProjects();
+        else if (condition.equals("L")) project = projectService.getProjectsByLeaderNo(no);
+        else if (condition.equals("M")) project = projectMemberService.getProjectsByUser(no);
+
+        return creator.create(project);
     }
 
     @ApiOperation(value = "단일 프로젝트 조회", notes = "프로젝트 번호로 단일 프로젝트를 조회합니다.")
@@ -111,6 +118,7 @@ public class ProjectController {
         return new ResponseEntity<>(body, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "프로젝트 삭제", notes = "프로젝트를 삭제합니다.\n로그인한 사용자가 프로젝트의 리더가 아닐 시 삭제에 실패합니다.")
     @DeleteMapping("/{no}")
     public ResponseEntity<BodyDto> deleteProject(@PathVariable Long no, HttpSession session) {
         BodyDto body = new BodyDto();
@@ -124,27 +132,4 @@ public class ProjectController {
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-/*    @ApiOperation(value = "리더로 프로젝트 목록 조회", notes = "리더 (프로젝트 생성자) 번호로 생성된 모든 프로젝트를 조회합니다.")
-    @GetMapping("/leader/{no}")
-    public ResponseEntity<BodyDto> getProjectsByLeaderNo(@PathVariable Long no) {
-        return creator.create(projectService.getProjectsByLeaderNo(no));
-    }
-    @ApiOperation(value = "멤버로 프로젝트 목록 조회", notes = "멤버 (사용자) 번호로 소속된 모든 프로젝트를 조회합니다.")
-    @GetMapping("/member/{no}")
-    public ResponseEntity<BodyDto> getProjectsByUser(@PathVariable Long no) {
-        return creator.create(projectMemberService.getProjectsByUser(no));
-    }*/
-
-    @ApiOperation(
-        value = "조건으로 프로젝트 목록 조회",
-        notes = "조건으로 프로젝트 목록을 조회합니다. \nleader - 사용자가 리더인 모든 프로젝트 조회\nmember - 사용자가 멤버인 모든 프로젝트 조회")
-    @GetMapping("/search/{condition}")
-    public ResponseEntity<BodyDto> getProjectsByUser(@PathVariable String condition, HttpSession session) {
-        Long no = ((User) session.getAttribute("login")).getNo();
-
-        if (Objects.equals(condition, "leader")) return creator.create(projectService.getProjectsByLeaderNo(no));
-        if (Objects.equals(condition, "member")) return creator.create(projectMemberService.getProjectsByUser(no));
-
-        return new ResponseEntity<>(new BodyDto(), HttpStatus.BAD_REQUEST);
-    }
 }
